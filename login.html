@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធចូលប្រើប្រាស់បុគ្គលិក - Login & Sign Up</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Khmer (Kantumruy Pro) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        khmer: ['Kantumruy Pro', 'sans-serif'],
+                    }
+               }
+            }
+        }
+    </script>
+a   <style>
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Container Card -->
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden transition-all duration-300">
+        
+        <!-- Header Section with Icon -->
+        <div class="p-8 pb-4 text-center">
+            <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-700 shadow-sm border border-slate-200/60">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-7 h-7">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+            </div>
+            
+            <h1 class="text-2xl font-bold text-slate-800 tracking-tight mb-1" id="formTitle">ស្វាគមន៍មកកាន់ប្រព័ន្ធ</h1>
+            <p class="text-slate-500 text-sm" id="formSubtitle">សូមបញ្ចូលអត្តលេខបុគ្គលិកដើម្បីចូលប្រើប្រាស់</p>
+
+            <!-- Navigation Tabs -->
+            <div class="flex bg-slate-100 p-1 rounded-xl mt-6 border border-slate-200/50">
+                <button id="tabLoginBtn" onclick="switchTab('login')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-slate-800 shadow-sm">
+                    ចូលប្រព័ន្ធ
+                </button>
+                <button id="tabSignupBtn" onclick="switchTab('signup')" class="flex-1 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700 rounded-lg transition-all duration-200">
+                    ចុះឈ្មោះ
+                </button>
+            </div>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="alertBox" class="hidden mx-8 p-3 rounded-xl text-xs font-medium transition-all duration-200"></div>
+
+        <!-- Form Content Container -->
+        <div class="px-8 pb-8 pt-2">
+            
+            <!-- ================= LOGIN FORM ================= -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">អត្តលេខបុគ្គលិក (Employee ID)</label>
+                    <input type="text" id="loginEmpId" required placeholder="ឧ. EMP-1024" 
+                        class="w-full px-4 py-3 bg-slate-50/50 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:bg-white transition-all text-sm">
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-semibold text-slate-700">ពាក្យសម្ងាត់ (Password)</label>
+                        <a href="#" onclick="showNotification('សូមទាក់ទងផ្នែកធនធានមនុស្ស (HR) ដើម្បីផ្លាស់ប្តូរពាក្យសម្ងាត់', 'info')" class="text-xs text-slate-500 hover:text-slate-800 underline">ភ្លេចពាក្យសម្ងាត់?</a>
+                    </div>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" 
+                        class="w-full px-4 py-3 bg-slate-50/50 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:bg-white transition-all text-sm">
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-medium rounded-xl shadow-md transition-all duration-200 text-sm mt-2">
+                    ចូលប្រព័ន្ធ
+                </button>
+            </form>
+
+            <!-- ================= SIGN UP FORM ================= -->
+            <form id="signupForm" onsubmit="handleSignup(event)" class="space-y-3 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">ឈ្មោះពេញ (Full Name)</label>
+                    <input type="text" id="signupName" required placeholder="ឧ. សុខ ជា" 
+                        class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:bg-white transition-all text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">អត្តលេខបុគ្គលិក (Employee ID)</label>
+                    <input type="text" id="signupEmpId" required placeholder="ឧ. EMP-1024" 
+                        class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:bg-white transition-all text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">ផ្នែក / ដេប៉ាតឺម៉ង់ (Department)</label>
+                    <select id="signupDept" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-300 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:bg-white transition-all text-sm">
+                        <option value="" disabled selected>ជ្រើសរើសផ្នែក</option>
+                        <option value="IT">ព័ត៌មានវិទ្យា (IT)</option>
+                        <option value="HR">ធនធានមនុស្ស (HR)</option>
+                        <option value="Finance">ហិរញ្ញវត្ថុ & គណនេយ្យ</option>
+                        <option value="Marketing">ទីផ្សារ (Marketing)</option>
+                        <option value="Operations">ប្រតិបត្តិការ (Operations)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">ពាក្យសម្ងាត់ (Password)</label>
+                    <input type="password" id="signupPassword" required placeholder="••••••••" 
+                        class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:bg-white transition-all text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">ផ្ទៀងផ្ទាត់ពាក្យសម្ងាត់ (Confirm Password)</label>
+                    <input type="password" id="signupConfirmPassword" required placeholder="••••••••" 
+                        class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:bg-white transition-all text-sm">
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-medium rounded-xl shadow-md transition-all duration-200 text-sm mt-3">
+                    បង្កើតគណនីបុគ្គលិក
+                </button>
+            </form>
+
+            <!-- Bottom Note -->
+            <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                <p class="text-xs text-slate-400">
+                    © ២០២៦ រក្សាសិទ្ធិគ្រប់យ៉ាងដោយប្រព័ន្ធគ្រប់គ្រងបុគ្គលិក
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Logic for Mock JSON Database -->
+    <script>
+        // ទិន្នន័យមូលដ្ឋានក្នុងទម្រង់ JSON (អាចរក្សាទុកក្នុង localStorage)
+        let dbData = {
+            "employees": {
+                "emp_01": {
+                    "emp_id": "EMP-1489",
+                    "password": "123456",
+                    "name": "ម៉ែន ដារ៉ារិទ្ធ",
+                    "department": "IT",
+                    "timestamp": "2026-11-08T10:00:00.000Z"
+                },
+                "emp_02": {
+                    "emp_id": "EMP-1024",
+                    "password": "yourpassword123",
+                    "name": "សុខ ជា",
+                    "department": "IT",
+                    "timestamp": "2026-11-08T10:00:00.000Z"
+                }
+            }
+        };
+
+        // ផ្ទុកទិន្នន័យពី localStorage ប្រសិនបើមានស្រាប់
+        if (localStorage.getItem('company_employees_db')) {
+            try {
+                dbData = JSON.parse(localStorage.getItem('company_employees_db'));
+            } catch (e) {
+                console.error("Error loading database:", e);
+            }
+        } else {
+            // រក្សាទុកទិន្នន័យដើមចូល localStorage លើកដំបូង
+            localStorage.setItem('company_employees_db', JSON.stringify(dbData));
+        }
+
+        function switchTab(mode) {
+            const loginBtn = document.getElementById('tabLoginBtn');
+            const signupBtn = document.getElementById('tabSignupBtn');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const formTitle = document.getElementById('formTitle');
+            const formSubtitle = document.getElementById('formSubtitle');
+
+            if (mode === 'login') {
+                loginBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-slate-800 shadow-sm";
+                signupBtn.className = "flex-1 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700 rounded-lg transition-all duration-200";
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                formTitle.textContent = "ស្វាគមន៍មកកាន់ប្រព័ន្ធ";
+                formSubtitle.textContent = "សូមបញ្ចូលអត្តលេខបុគ្គលិកដើម្បីចូលប្រើប្រាស់";
+            } else {
+                signupBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-slate-800 shadow-sm";
+                loginBtn.className = "flex-1 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700 rounded-lg transition-all duration-200";
+                signupForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                formTitle.textContent = "បង្កើតគណនីថ្មី";
+                formSubtitle.textContent = "សូមបំពេញព័ត៌មានខាងក្រោមដើម្បីចុះឈ្មោះ";
+            }
+        }
+
+        function showNotification(message, type = 'danger') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = "mx-8 p-3 rounded-xl text-xs font-medium transition-all duration-200 ";
+            
+            if (type === 'danger') {
+                alertBox.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-200');
+            } else if (type === 'success') {
+                alertBox.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
+            } else {
+                alertBox.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200');
+            }
+
+            alertBox.classList.remove('hidden');
+            setTimeout(() => {
+                alertBox.classList.add('hidden');
+            }, 3500);
+        }
+
+        // បើកទំព័រដើម ឬហៅ Google Apps Script ពេល Login ជោគជ័យ
+        function openHomePage(userData) {
+            showNotification(`ចូលប្រព័ន្ធជោគជ័យ! ស្វាគមន៍ ${userData.name}`, 'success');
+            
+            setTimeout(() => {
+                if (typeof google !== 'undefined' && google.script && google.script.run) {
+                    google.script.run
+                        .withSuccessHandler(function(htmlContent) {
+                            document.open();
+                            document.write(htmlContent);
+                            document.close();
+                        })
+                        .withFailureHandler(function(error) {
+                            showNotification('មានបញ្ហាក្នុងការបើកទំព័រដើម: ' + error.message, 'danger');
+                        })
+                        .loadIndex();
+                } else {
+                    // ករណីេសងខាងក្រៅ Google Apps Script (Test locally)
+                    console.log("Logged in user data:", userData);
+                }
+            }, 1000);
+        }
+
+        // ផ្ទៀងផ្ទាត់ការ Login ជាមួយ JSON Database
+        function handleLogin(e) {
+            e.preventDefault();
+            const empIdInput = document.getElementById('loginEmpId').value.trim();
+            const passwordInput = document.getElementById('loginPassword').value.trim();
+            
+            let foundUser = null;
+
+            // រកមើល emp_id នៅក្នុង Object "employees"
+            for (let key in dbData.employees) {
+                if (dbData.employees[key].emp_id.toLowerCase() === empIdInput.toLowerCase()) {
+                    foundUser = dbData.employees[key];
+                    break;
+                }
+            }
+
+            if (foundUser) {
+                if (foundUser.password === passwordInput) {
+                    openHomePage(foundUser);
+                } else {
+                    showNotification('ពាក្យសម្ងាត់មិនត្រឹមត្រូវ!', 'danger');
+                }
+            } else {
+                showNotification('រកមិនឃើញអត្តលេខបុគ្គលិកនេះទេ!', 'danger');
+            }
+        }
+
+        // ចុះឈ្មោះគណនីថ្មី និងបញ្ចូលទៅក្នុង JSON Database
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const empId = document.getElementById('signupEmpId').value.trim();
+            const dept = document.getElementById('signupDept').value;
+            const pass = document.getElementById('signupPassword').value;
+            const confirmPass = document.getElementById('signupConfirmPassword').value;
+
+            if (pass !== confirmPass) {
+                showNotification('ពាក្យសម្ងាត់ទាំងពីរមិនត្រូវគ្នាទេ!', 'danger');
+                return;
+            }
+
+            // ពិនិត្យមើលថាតើអត្តលេខមានរួចហើយឬនៅ
+            let exists = false;
+            for (let key in dbData.employees) {
+                if (dbData.employees[key].emp_id.toLowerCase() === empId.toLowerCase()) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists) {
+                showNotification('អត្តលេខបុគ្គលិកនេះមានរួចហើយ!', 'danger');
+                return;
+            }
+
+            // បង្កើត Key ថ្មី (ឧ. emp_03, emp_04, ...)
+            const newKey = 'emp_' + String(Object.keys(dbData.employees).length + 1).padStart(2, '0');
+
+            // បន្ថែមទិន្នន័យថ្មីចូល JSON Structure
+            dbData.employees[newKey] = {
+                "emp_id": empId,
+                "password": pass,
+                "name": name,
+                "department": dept,
+                "timestamp": new Date().toISOString()
+            };
+
+            // រក្សាទុកទៅក្នុង localStorage
+            localStorage.setItem('company_employees_db', JSON.stringify(dbData));
+
+            showNotification('បង្កើតគណនីបុគ្គលិកបានជោគជ័យ!', 'success');
+            setTimeout(() => {
+                e.target.reset();
+                switchTab('login');
+            }, 1200);
+        }
+    </script>
+</body>
+</html>

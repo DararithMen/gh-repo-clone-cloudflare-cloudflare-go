@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>របាយការណ៍បែងចែកកំលាំង និងលទ្ធផលការងារប្រចាំថ្ងៃ</title>
+    <!-- Google Fonts for Khmer Language -->
+     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+ 
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Moul&family=Khmer+OS+Siemreap&display=swap');
+
+       body {
+            font-family: 'Battambang', Arial, sans-serif;
+            margin: 20px;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-size: 12px;
+        }
+        .container {
+           width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 8px;
+        }
+        /* Action Buttons Toolbar */
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn {
+            font-family: 'Battambang', Arial, sans-serif;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-add { background-color: #3182ce; color: white; }
+        .btn-add:hover { background-color: #2b6cb0; }
+        .btn-save { background-color: #38a169; color: white; }
+        .btn-save:hover { background-color: #2f855a; }
+        .btn-savedata { background-color: #319795; color: white; }
+        .btn-savedata:hover { background-color: #2c7a7b; }
+        .btn-update { background-color: #d69e2e; color: white; }
+        .btn-update:hover { background-color: #b7791f; }
+        .btn-print { background-color: #4a5568; color: white; }
+        .btn-print:hover { background-color: #2d3748; }
+        .btn-image { background-color: #805ad5; color: white; }
+        .btn-image:hover { background-color: #6b46c1; }
+        .btn-clear { background-color: #e53e3e; color: white; }
+        .btn-clear:hover { background-color: #c53030; }
+
+        /* ការរចនាតារាង (Table Design) ឱ្យស្អាតនិងមានស្តង់ដារ */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 13px;
+            font-size: 11px;
+            font-family: 'Battambang', Arial, sans-serif;
+            background-color: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid ##000;
+        }
+        
+        th, td {
+            border: 1px solid #000;
+            padding: 7px 8px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 1.4;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-weight: bold;
+            font-size: 11.5px;
+        }
+        
+        /* ជួរដេកឆ្លាស់ពណ៌ស្រាលៗ (Zebra Striping) ងាយស្រួលមើល */
+        tbody tr:nth-child(even) {
+            background-color: #fbfdff;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .text-left {
+            text-align: left !important;
+            padding-left: 10px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin: 15px 0 8px 0;
+            font-size: 13px;
+            font-family: 'Battambang', Arial, sans-serif;
+            color: #1e293b;
+            border-left: 4px solid #3182ce;
+            padding-left: 8px;
+        }
+        
+        .bg-amber-50 { background-color: #fef9c3 !important; }
+        .bg-rose-50 { background-color: #ffe4e6 !important; }
+        .bg-emerald-50 { background-color: #e0e7ff !important; color: #1e1b4b !important; }
+        
+        .grid-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+         .left-col { flex: 2; min-width: 300px; }
+        .right-col { flex: 1; min-width: 300px; }
+
+        input.editable-cell {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-family: 'Battambang', Arial, sans-serif;
+            font-size: 13px;
+        }
+        input.editable-cell:focus {
+            outline: 1px solid #3182ce;
+            background: #fff;
+        }
+        .highlight-amount {
+            background-color: #f3e8ff;
+            font-weight: bold; /* ការកំណត់រចនាសម្ព័ន្ធប្រអប់បញ្ចូលទិន្នន័យ Input និង Select */
+        input.editable-cell, select.editable-cell {
+            width: 100%;
+            border: 1px solid transparent;
+            background: transparent;
+            text-align: center;
+            font-family: 'Battambang', Arial, sans-serif;
+            font-size: 11px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        input.editable-cell:hover, select.editable-cell:hover {
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        input.editable-cell:focus, select.editable-cell:focus {
+            outline: none;
+            border-color: #3182ce;
+            background: #fff;
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+
+        .highlight-amount {
+            background-color: #f3e8ff;
+            font-weight: bold;
+        }
+
+
+        @media print {
+            .toolbar { display: none !important; }
+            body { background: #fff; margin: 0; }
+            .container { box-shadow: none; padding: 0; width: 100% !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="p-2 md:p-6 text-slate-800">
+
+    <!-- Toolbar Buttons -->
+<div class="toolbar">
+  <div class="flex items-center space-x-3">
+    <span class="text-xl font-bold text-slate-700">📋 របាយការណ៍ប្រចាំថ្ងៃ</span>
+    <!-- បង្ហាញ User Badge ក្រោយពេល Login -->
+    <span id="userBadge" style="background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 11px; display: inline-block;"></span>
+  </div>
+  <div class="flex space-x-2 items-center flex-wrap gap-2">
+    <button class="btn btn-add" onclick="addRow()">➕ Add Row</button>
+    <button type="button" class="btn btn-save" onclick="submitData()">រក្សាទុកទិន្នន័យ (Save)</button>
+    <span id="loading_status" style="font-weight: bold;"></span>
+    <button type="button" class="btn btn-savedata" onclick="saveToLocalStorage(); alert('បានរក្សារទម្រង់ខាងក្រោមជោគជ័យ');">ចុច រក្សាទម្រង់</button>
+    <button class="btn btn-clear" onclick="clearLocalStorage()">🗑️ Clear Data</button>
+    <button class="btn btn-update" onclick="updateData()">🔄 Update</button>
+    <button class="btn btn-print" onclick="window.print()">🖨️ Print</button>
+    <button class="btn btn-image" onclick="convertToImage()">📷 Convert to Image</button>
+    <!-- ប៊ូតុង Logout -->
+    <button class="btn" style="background-color: #e53e3e; color: white;" onclick="logout()">🚪 ចាកចេញ (Logout)</button>
+  </div>
+</div>
+    <!-- Main Report Canvas Sheet -->
+    <div class="container">
+    <!-- Document Header Section -->
+       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
+            <div>
+              <div class="logo-section">
+         <img src="https://imagizer.imageshack.com/img922/1973/mZIfOC.png" alt="HERITAGE Logo" style="height: 75px; width: auto; object-fit: contain;">
+    </div>
+              <div style="margin-top: 5px; display: flex; align-items: center; gap: 5px;">
+                    <label style="font-weight: bold; font-size: 12px;">ថ្ងៃទី:</label>
+                    <input type="date" id="reportDate" value="2026-10-23" style="border: 1px solid #ccc; padding: 2px;">
+                </div>
+            </div>
+            
+              <div style="text-align: center;">
+                <h1 style="font-family: 'Moul', serif; font-size: 16px; font-weight: bold;">របាយការណ៍បែងចែកកម្លាំង និងលទ្ធផលការងារប្រចាំថ្ងៃ</h1>
+            </div>
+
+            <div style="text-align: right; margin-top: 75px; display: flex; align-items: center; gap: 5px;">
+                    <label style="font-weight: bold; font-size: 12px;">វេនទី:</label>
+                    <select id="reportShift" class="border border-slate-300 rounded px-2 py-0.5 text-xs font-bold text-slate-800 bg-amber-50">
+                        <option value="1">១ (Shift 1)</option>
+                        <option value="2">២ (Shift 2)</option>
+                
+                    </select>
+                </div>
+            </div>
+
+    <!-- Section I -->
+
+    <div class="mb-6 overflow-x-auto">
+        <table id="workTable"class="w-full text-xs border-collapse border border-slate-600">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 20px; text-align: center;">លរ No</th>
+                    <th rowspan="2" style="width: 190px; text-align: center;">ឈ្មោះការងារ List Work</th>
+                    <th rowspan="2" style="width: 50px; text-align: center;">ទីតាំងឃ្លាំង Wearhouse</th>
+                    <th rowspan="2" style="width: 50px;">កម្លាំងសរុប T-Labor</th>
+                    <th colspan="8" style="text-align: center;">បែងចែកកម្លាំង Staff Arrangements</th>
+                    <th rowspan="2" style="width: 50px;">លទ្ធផល / Productivity</th>
+                    <th rowspan="2" style="width: 190px; text-align: center;">បរិយាយ Descriptint</th>
+                </tr>
+              
+                    <th style="width: 25px; text-align: center;">អ្នកវេច្ចប់ Packaging</th>
+                    <th style="width: 25px; text-align: center;">ដុតឡរ,ទឹកស្ករ Boiler,Mollase</th>
+                    <th style="width: 25px; text-align: center;">ចាក់ជីតៅទី១ InputHooper1</th>
+                    <th style="width: 25px; text-align: center;">ចាក់ជីតៅទី២ InputHooper2</th>
+                    <th style="width: 25px; text-align: center;">ដើរចានទី១ Dice1</th>
+                    <th style="width: 25px; text-align: center;">ដើរចានទី​​២ Dice2</th>
+                    <th style="width: 25px; text-align: center;">អ្នកបើកហ្វក់លីស Forklift</th>
+                    <th style="width: 25px; text-align: center;">អ្នកសំអាត Cleaner</th>
+                </tr>
+            </thead>
+           <!-- ជួរដេកគំរូទី១ -->
+            <tbody id="tableBody">
+                <!-- ជួរដេកនឹងត្រូវបង្កើតឡើងដោយស្វ័យប្រវត្តិ ឬផ្ទុកពី localStorage -->
+            </tbody>
+            <tfoot>
+                <tr style="font-weight: bold; background-color: #f9f9f9;">
+                    <td colspan="3" class="text-left">សរុបកម្លាំងសរុប</td>
+                    <td id="grand-total">-</td>
+                    <td colspan="10"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+  
+  
+    <!-- Section II -->
+   
+         <div class="section-title">II. របាយការណ៍ការចាក់ជីវត្ថុធាតុដើមដើម្បីផលិត</div>
+           <!-- Table Input_RM -->
+              <table>
+                  <thead>
+                      <tr class="bg-slate-100 font-bold">
+                          <th rowspan="2">No</th>
+                          <th colspan="2">H (H,S1,S2)</th>
+                          <th colspan="2">4001/4003(=,^,W,B,HB,SP,[ )</th>
+                          <th colspan="2">M(M)</th>
+                          <th colspan="2">L (L,+,Y,1,P)</th>
+                          <th colspan="2">RM (A)</th>
+                          <th colspan="2">CP (B)</th>
+                          <th colspan="2">Return (C)</th>
+                          <th colspan="2"  class="w-28 bg-rose-50">សរុបចាក់ជី / Amount</th>
+                          <th colspan="2" class="w-32 bg-emerald-50"> លទ្ធផល / Production</th>
+                      <tr class="bg-slate-50 font-semibold text-[13px]">
+                                  <th>Input/t</th><th>Rate %</th>
+                                  <th>Input/t</th><th>Rate %</th>
+                                  <th>Input/t</th><th>Rate %</th>
+                                  <th>Input/t</th><th>Rate %</th>
+                                  <th class="bg-amber-50">Input/t</th><th class="bg-amber-50">Rate %</th>
+                                  <th>Input/t</th><th>Rate %</th>
+                                  <th>Input/t</th><th>Rate %</th>
+                                  <th class="bg-rose-50">Input/t</th><th class="bg-rose-50">Rate %</th>
+                                  <th class="bg-emerald-50">Output</th><th class="bg-emerald-50">Yield %</th>
+                              </tr>
+                  </thead>
+                  <tbody>
+                        <tr>
+                          <td class="row-number">1</td>
+                          <td><input type="text" id="h_input" class="editable-cell" value="-" oninput="calculateSectionII(); saveToLocalStorage()"></td>
+                          <td><span id="h_rate">-</span></td>
+                          <td><input type="text" id="c4001_input" class="editable-cell" value="" oninput="calculateSectionII(); saveToLocalStorage()"></td>
+                          <td><span id="c4001_rate">-</span></td>
+                          <td><input type="text" id="m_input" class="editable-cell" value="" oninput="calculateSectionII(); saveToLocalStorage()"></td>
+                          <td><span id="m_rate">-</span></td>
+                          <td><input type="text" id="l_input" class="editable-cell" value="-" oninput="calculateSectionII(); saveToLocalStorage()"></td>
+                          <td><span id="l_rate">-</span></td>
+                          <td><span id="rm_input" style="font-weight:bold;">0</span></td>
+                          <td><span id="rm_rate">-</span></td>
+                          <td><input type="text" id="cp_input" class="editable-cell" value="-" oninput="calculateSectionII(); saveToLocalStorage()"></td>
+                          <td><span id="cp_rate">-</span></td>
+                          <td><input type="text" id="return_input" class="editable-cell" value="" oninput="calculateSectionII(); saveToLocalStorage()"></td>
+                          <td><span id="return_rate">-</span></td>
+                          <td class="highlight-amount"><span id="tamount_input">0</span></td>
+                          <td><strong>100.00%</strong></td>
+                          <td><input type="text" id="product_output" class="editable-cell" value="-" oninput="calculateSectionII(); saveToLocalStorage()" style="font-weight:bold; color:blue;"></td>
+                          <td><span id="yield" style="font-weight:bold; color:blue;">-</span></td>
+                      </tr>
+
+                      
+                      <tr>
+                          <th colspan="14" class="text-left"></th>
+                          <td colspan="3" class="bg-yellow-highlight font-bold text-left-cell px-2 py-1">Grand Total Packaging:</td>
+                          <td colspan="2" class="bg-yellow-highlight font-bold text-left-cell px-2 py-2 text-black"><input type="text" id="grand-packaging" class="editable-cell font-bold" value="435.50 T" oninput="saveToLocalStorage()"></td>
+                      </tr>
+
+                    </tbody>
+                                  
+              </table>
+    
+    
+    
+    <!-- Grid Layout for Sections III and Summary Box -->
+              <div class="grid-container">
+                <div class="left-col">
+                  <div class="section-title">III. ការប្រើប្រាស់ថាមពល អគ្គីសនី</div>
+                   <table>
+                      <thead>
+                        <tr>
+                                <th class="text-left">Start Time</th>
+                                <th class="text-left">Start / Kwh</th>
+                                <th class="text-left">End / Kwh</th>
+                                <th class="bg-amber-100">Total / Kwh</th>
+                                <th contenteditable="true" class="editable-cell">Remark</th>
+                            </tr>
+                            <tr>
+                              
+                              <td><input type="text" id="startTime" class="editable-cell" value="5:00:00 AM-4:30 PM" oninput="saveToLocalStorage()"></td>
+                                <td><input type="text" id="startKwh" class="editable-cell" value="105" oninput="calculateKwh() ; saveToLocalStorage()"></td>
+                                <td><input type="text" id="endKwh" class="editable-cell" value="205" oninput="calculateKwh() ; saveToLocalStorage()"></td>
+                              
+                                <td><span id="totalKwh">0</span> Kwh</td>
+                                <td contenteditable="true" class="text-left"><input type="text" class="editable-cell text-left" id="remarkKwh" value="Start Operation Line for Shift 1" oninput="saveToLocalStorage()"></td>
+                            </tr>
+                      </thead>
+                  </table>
+                </div>
+                 
+                 <div class="grid-container">
+                   <div class="left-col">
+                    <div class="section-title">IV. របាយការណ៍ជី Under-Size និង Over-Size </div>
+                    <table>
+                       <thead>
+                          <tr>
+                              <th style="width: 30px;">ល.រ</th>
+                              <th class="text-left">ជីគ្រាប់ល្អិត (Under-Size)</th>
+                              <th class="text-left">ជីគ្រាប់ធំ (Over-Size)</th>
+                              <th class="text-left">ទឹកស្ករ/លីត្រ</th>
+                              <th class="text-left">ទឹក103/ធុង</th>
+                              <th class="text-left">អុស/គីប</th>
+                          </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>1</td>
+                        <td><input type="text" class="editable-cell under-size-input" value="-" oninput="calculateGrandTotal(); saveToLocalStorage()"></td>
+                        <td><input type="text" class="editable-cell over-size-input" value="-" oninput="calculateGrandTotal(); saveToLocalStorage()"></td>
+                        <td><input type="text" class="editable-cell" value="-" id="sugar_litter" oninput="saveToLocalStorage()"></td>
+                        <td><input type="text" class="editable-cell" value="-" id="water_tank" oninput="saveToLocalStorage()"></td>
+                        <td><input type="text" class="editable-cell" style="font-weight:bold;" value="-" id="firewood" oninput="saveToLocalStorage()"></td>
+                    
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold; background-color: #f9f9f9;">
+                        <td colspan="1" class="text-left">=</td>
+                        <td colspan="5" id="grand total Overside" class="text-left">0 T</td>
+                    </tr>
+                </tfoot>
+            </table>
+                   </div>
+       
+        <div class="grid-container">
+        
+            <div class="left-col">
+            <div class="section-title">V. បញ្ហា និង ដំណោះស្រាយប្រចាំថ្ងៃ</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 30px;">ល.រ</th>
+                        <th style="width: 150px;">ប្រភេទគ្រឿងយន្ត Machine</th>
+                        <th style="width: 80px;">ដោះ/ខេល</th>
+                        <th>ដំណោះស្រាយ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" class="editable-cell text-left" value="-"></td>
+                        <td><input type="text" class="editable-cell" value=""></td>
+                        <td><input type="text" class="editable-cell text-left" value=""></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><input type="text" class="editable-cell text-left" value="-"></td>
+                        <td><input type="text" class="editable-cell" value="-"></td>
+                        <td><input type="text" class="editable-cell text-left" value=""></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><input type="text" class="editable-cell text-left" value=""></td>
+                        <td><input type="text" class="editable-cell" value=""></td>
+                        <td><input type="text" class="editable-cell text-left" value=""></td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+  
+    <!-- Signature -->
+    <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+        <div style="text-align: center; width: 200px;">
+            <div>Prepared by</div>
+            <div style="height: 40px;"></div>
+            <div><input type="text" class="editable-cell" id="preparedName" value="Name: Men Dararith" style="font-weight: bold; text-align: center;" oninput="saveToLocalStorage()"></div>
+            <div><input type="text" class="editable-cell" id="preparedPos" value="Supervisor" style="text-align: center;" oninput="saveToLocalStorage()"></div>
+        </div>
+     </div>
+   </div>
+   </div>
+</div>
+    </div>
+           
+
+
+
+<script>
+  const workOptionsList = [
+        "ប្រធានផ្នែក W.H Suppervisor",
+        "ប្រធានផ្នែក Granular line",
+        "ការងារដំណើរការផលិតកម្ម ឌីស១",
+        "ការងារដំណើរការផលិតកម្ម ឌីស២",
+        "វេចខ្ចប់ ជីគ្រាប់ពិសេស(GF 50kg PK+)",
+        "វេចខ្ចប់ ជីគ្រាប់ធម្មតា(GF 50kg PK)",
+        "វេចខ្ចប់ ជីគ្រាប់ធម្មតា (GF 800kg PK)",
+        "រែងជី (GF- 800kg/JB PK)",
+        "រៀបឡូត៍ជីគ្រាប់បាវ50គីឡូ",
+        "ការងារផ្សេងៗ",
+        "អវត្តមាន"
+    ];
+
+    function createWorkOptions(selectedVal = "") {
+        let options = `<option value="" disabled ${!selectedVal ? 'selected' : ''}>-- ជ្រើសរើសការងារ --</option>`;
+        workOptionsList.forEach(opt => {
+            options += `<option value="${opt}" ${selectedVal === opt ? 'selected' : ''}>${opt}</option>`;
+        });
+        return options;
+    }
+
+    function addRow(data = null) {
+        const tableBody = document.getElementById('tableBody');
+        const newRow = document.createElement('tr');
+        newRow.className = 'workTable';
+        
+        const selVal = data ? data.work : "";
+        const wHouse = data ? data.warehouse : "GL2";
+        const pkg = data ? data.pkg : "-";
+        const boil = data ? data.boiler : "-";
+        const in1 = data ? data.in1 : "-";
+        const in2 = data ? data.in2 : "-";
+        const d1 = data ? data.d1 : "-";
+        const d2 = data ? data.d2 : "-";
+        const fork = data ? data.fork : "-";
+        const clean = data ? data.clean : "-";
+        const prod = data ? data.prod : "-";
+        const desc = data ? data.desc : "";
+
+        newRow.innerHTML = `
+            <td class="row-number">1</td>
+            <td class="text-left">
+                <select class="editable-cell work-select" style="border: none; outline: none; background: transparent; cursor: pointer;" onchange="updateWorkData(this); saveToLocalStorage();">
+                    ${createWorkOptions(selVal)}
+                </select>
+            </td>
+            <td><input type="text" class="editable-cell warehouse-col" value="${wHouse}" oninput="saveToLocalStorage()"></td>
+            <td><input type="number" class="editable-cell total-labor font-bold" style="color: #2b6cb0;" value="0" readonly></td>
+            <td><input type="text" class="editable-cell col-packaging" value="${pkg}" oninput="calculateGrandTotal_labor(); saveToLocalStorage()"></td>
+            <td><input type="text" class="editable-cell col-boiler" value="${boil}" oninput="calculateGrandTotal_labor(); saveToLocalStorage()"></td>
+            <td><input type="text" class="editable-cell col-input1" value="${in1}" oninput="calculateGrandTotal_labor(); saveToLocalStorage()"></td>
+            <td><input type="text" class="editable-cell col-input2" value="${in2}" oninput="calculateGrandTotal_labor(); saveToLocalStorage()"></td>
+            <td><input type="text" class="editable-cell col-dice1" value="${d1}" oninput="calculateGrandTotal_labor(); saveToLocalStorage()"></td>
+            <td><input type="text" class="editable-cell col-dice2" value="${d2}" oninput="calculateGrandTotal_labor(); saveToLocalStorage()"></td>
+            <td><input type="text" class="editable-cell col-forklift" value="${fork}" oninput="calculateGrandTotal_labor(); saveToLocalStorage()"></td>
+            <td><input type="text" class="editable-cell col-cleaner" value="${clean}" oninput="calculateGrandTotal_labor(); saveToLocalStorage()"></td>
+            <td><input type="text" class="editable-cell col-product" value="${prod}" oninput="saveToLocalStorage()"></td>
+            <td contenteditable="true" class="editable-cell desc-col"${desc} oninput="saveToLocalStorage()"></td>
+        `;
+        
+        tableBody.appendChild(newRow);
+        updateRowNumbers();
+        calculateGrandTotal_labor();
+    }
+
+    
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('#tableBody .workTable');
+        rows.forEach((row, index) => {
+            row.querySelector('.row-number').innerText = index + 1;
+        });
+    }
+    function updateWorkData(selectElement) {
+        const selectedValue = selectElement.value;
+        const row = selectElement.closest('tr');
+        
+        if (selectedValue === "ការងារដំណើរការផលិតកម្ម ឌីស១") {
+            row.querySelector('.col-boiler').value = 1;
+            row.querySelector('.col-input1').value = 1;
+            row.querySelector('.col-dice1').value = 1;
+            row.querySelector('.col-forklift').value = 1;
+        }
+        calculateGrandTotal_labor();
+    }
+
+    function calculateGrandTotal_labor() {
+        let grandTotal = 0;
+        const rows = document.querySelectorAll('#tableBody tr');
+
+        rows.forEach(row => {
+            const selectEl = row.querySelector('select');
+            const selectedVal = selectEl ? selectEl.value : "";
+            const tLaborInput = row.querySelector('.total-labor');
+
+            if (selectedVal === "ប្រធានផ្នែក W.H Suppervisor" || selectedVal === "ប្រធានផ្នែក Granular line") {
+                if (tLaborInput) tLaborInput.value = 1;
+                grandTotal += 1;
+            } else {
+                const staffInputs = row.querySelectorAll('.col-packaging, .col-boiler, .col-input1, .col-input2, .col-dice1, .col-dice2, .col-forklift, .col-cleaner');
+                let rowTotal = 0;
+                staffInputs.forEach(input => {
+                    let val = parseFloat(input.value);
+                    if (!isNaN(val)) {
+                        rowTotal += val;
+                    }
+                });
+
+                if (tLaborInput) {
+                    tLaborInput.value = rowTotal;
+                }
+                grandTotal += rowTotal;
+            }
+        });
+
+        const grandTotalElement = document.getElementById('grand-total');
+        if (grandTotalElement) {
+            grandTotalElement.innerText = grandTotal;
+        }
+    }
+function saveToLocalStorage() {
+        const formData = {
+            reportDate: document.getElementById('reportDate').value,
+            reportShift: document.getElementById('reportShift').value,
+            h_input: document.getElementById('h_input').value,
+            c4001_input: document.getElementById('c4001_input').value,
+            m_input: document.getElementById('m_input').value,
+            l_input: document.getElementById('l_input').value,
+            cp_input: document.getElementById('cp_input').value,
+            return_input: document.getElementById('return_input').value,
+            product_output: document.getElementById('product_output').value,
+            grand_packaging: document.getElementById('grand-packaging').value,
+            startTime: document.getElementById('startTime').value,
+            startKwh: document.getElementById('startKwh').value,
+            endKwh: document.getElementById('endKwh').value,
+            remarkKwh: document.getElementById('remarkKwh').value,
+            underSize: document.querySelector('.under-size-input').value,
+            overSize: document.querySelector('.over-size-input').value,
+            sugarLitter: document.getElementById('sugar_litter').value,
+            waterTank: document.getElementById('water_tank').value,
+            firewood: document.getElementById('firewood').value,
+            preparedName: document.getElementById('preparedName').value,
+            preparedPos: document.getElementById('preparedPos').value,
+            rows: []
+        };
+
+        document.querySelectorAll('#tableBody tr').forEach(tr => {
+            const workSelect = tr.querySelector('.work-select');
+            const warehouseCol = tr.querySelector('.warehouse-col');
+            const pkg = tr.querySelector('.col-packaging');
+            const boil = tr.querySelector('.col-boiler');
+            const in1 = tr.querySelector('.col-input1');
+            const in2 = tr.querySelector('.col-input2');
+            const d1 = tr.querySelector('.col-dice1');
+            const d2 = tr.querySelector('.col-dice2');
+            const fork = tr.querySelector('.col-forklift');
+            const clean = tr.querySelector('.col-cleaner');
+            const prod = tr.querySelector('.col-product');
+            const desc = tr.querySelector('.desc-col');
+
+            formData.rows.push({
+                work: workSelect ? workSelect.value : "",
+                warehouse: warehouseCol ? warehouseCol.value : "",
+                pkg: pkg ? pkg.value : "",
+                boiler: boil ? boil.value : "",
+                in1: in1 ? in1.value : "",
+                in2: in2 ? in2.value : "",
+                d1: d1 ? d1.value : "",
+                d2: d2 ? d2.value : "",
+                fork: fork ? fork.value : "",
+                clean: clean ? clean.value : "",
+                prod: prod ? prod.value : "",
+                desc: desc ? desc.value : ""
+            });
+        });
+
+        localStorage.setItem('heritage_daily_report', JSON.stringify(formData));
+    }
+
+    function loadFromLocalStorage() {
+        const savedData = localStorage.getItem('heritage_daily_report');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            if (data.reportDate) document.getElementById('reportDate').value = data.reportDate;
+            if (data.reportShift) document.getElementById('reportShift').value = data.reportShift;
+            if (data.h_input) document.getElementById('h_input').value = data.h_input;
+            if (data.c4001_input) document.getElementById('c4001_input').value = data.c4001_input;
+            if (data.m_input) document.getElementById('m_input').value = data.m_input;
+            if (data.l_input) document.getElementById('l_input').value = data.l_input;
+            if (data.cp_input) document.getElementById('cp_input').value = data.cp_input;
+            if (data.return_input) document.getElementById('return_input').value = data.return_input;
+            if (data.product_output) document.getElementById('product_output').value = data.product_output;
+            if (data.grand_packaging) document.getElementById('grand-packaging').value = data.grand_packaging;
+            if (data.startTime) document.getElementById('startTime').value = data.startTime;
+            if (data.startKwh) document.getElementById('startKwh').value = data.startKwh;
+            if (data.endKwh) document.getElementById('endKwh').value = data.endKwh;
+            if (data.remarkKwh) document.getElementById('remarkKwh').value = data.remarkKwh;
+            if (data.underSize) document.querySelector('.under-size-input').value = data.underSize;
+            if (data.overSize) document.querySelector('.over-size-input').value = data.overSize;
+            if (data.sugarLitter) document.getElementById('sugar_litter').value = data.sugarLitter;
+            if (data.waterTank) document.getElementById('water_tank').value = data.waterTank;
+            if (data.firewood) document.getElementById('firewood').value = data.firewood;
+            if (data.preparedName) document.getElementById('preparedName').value = data.preparedName;
+            if (data.preparedPos) document.getElementById('preparedPos').value = data.preparedPos;
+
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            if (data.rows && data.rows.length > 0) {
+                data.rows.forEach(r => addRow(r));
+            } else {
+                for(let i=0; i<4; i++) addRow();
+            }
+        } else {
+            for(let i=0; i<4; i++) addRow();
+        }
+    }
+      function clearLocalStorage() {
+        if(confirm("តើអ្នកពិតជាចង់លុបទិន្នន័យដែលបានរក្សាទុក និងកំណត់ទម្រង់ឡើងវិញទាំងអស់មែនទេ?")) {
+            // លុบทិន្នន័យចេញពី localStorage
+            localStorage.removeItem('heritage_daily_report');
+            
+            // កំណត់ថ្ងៃ និងវេនដើម (អាចដាក់ថ្ងៃបច្ចុប្បន្ន ឬទុកទទេ)
+            document.getElementById('reportDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('reportShift').value = "1";
+
+            //លុបទិន្នន័យតារាងបុគ្គលិក និងបង្កើតឡើងវិញចំនួន ៤ ជួរ
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            for(let i = 0; i < 4; i++) {
+                addRow();
+            }
+
+            // សម្អាតតារាង Section II (ការចាក់ជី និងអគ្គិសនី)
+            document.getElementById('h_input').value = "-";
+            document.getElementById('c4001_input').value = "";
+            document.getElementById('m_input').value = "";
+            document.getElementById('l_input').value = "-";
+            document.getElementById('cp_input').value = "-";
+            document.getElementById('return_input').value = "";
+            document.getElementById('product_output').value = "-";
+            document.getElementById('grand-packaging').value = "435.50 T";
+            
+            document.getElementById('startTime').value = "5:00:00 AM-4:30 PM";
+            document.getElementById('startKwh').value = "105";
+            document.getElementById('endKwh').value = "205";
+            document.getElementById('remarkKwh').value = "Start Operation Line for Shift 1";
+
+            // សម្អាតតារាង Section III (Under-Size / Over-Size & Utility)
+            document.querySelector('.under-size-input').value = "-";
+            document.querySelector('.over-size-input').value = "-";
+            document.getElementById('sugar_litter').value = "-";
+            document.getElementById('water_tank').value = "-";
+            document.getElementById('firewood').value = "-";
+
+            // សម្អាតឈ្មោះអ្នករៀបចំ
+            document.getElementById('preparedName').value = "Name: Men Dararith";
+            document.getElementById('preparedPos').value = "Supervisor";
+
+            // ហៅមុខងារគណនាឡើងវិញដើម្បីឱ្យតារាងធ្វើបច្ចុប្បន្នភាពទិន្នន័យស្មើ 0
+            calculateGrandTotal_labor();
+            calculateSectionII();
+            calculateGrandTotal();
+            calculateKwh();
+
+            alert("ទិន្នន័យត្រូវបានលុប និងកំណត់ឡើងវិញដោយជោគជ័យ!");
+        }
+    }
+
+    function calculateGrandTotal() {
+        const parseValue = (value) => {
+            if (!value) return 0;
+            let cleanStr = value.toString().replace(/[^\d.-]/g, '');
+            return parseFloat(cleanStr) || 0;
+        };
+
+        const underSizeInput = document.querySelector('.under-size-input');
+        const overSizeInput = document.querySelector('.over-size-input');
+
+        if (underSizeInput && overSizeInput) {
+            let underSizeVal = parseValue(underSizeInput.value);
+            let overSizeVal = parseValue(overSizeInput.value);
+            let total = (underSizeVal + overSizeVal) / 1000;
+          
+            const resultElement = document.getElementById('grand total Overside');
+            if (resultElement) {
+                resultElement.textContent = total.toFixed(2) + ' T';
+            }
+        }
+    }
+
+    function calculateKwh() {
+        let start = parseFloat(document.getElementById('startKwh').value) || 0;
+        let end = parseFloat(document.getElementById('endKwh').value) || 0;
+        let total = end - start;
+        if (total < 0) total = 0;
+        document.getElementById('totalKwh').innerText = total;
+    }
+        
+    function parseVal(val) {
+        let num = parseFloat(val);
+        return isNaN(num) ? 0 : num;
+    }
+
+    function calculateSectionII() {
+        let h = parseVal(document.getElementById('h_input').value);
+        let c4001 = parseVal(document.getElementById('c4001_input').value);
+        let m = parseVal(document.getElementById('m_input').value);
+        let l = parseVal(document.getElementById('l_input').value);
+        let cp = parseVal(document.getElementById('cp_input').value);
+        let returnC = parseVal(document.getElementById('return_input').value);
+        let product = parseVal(document.getElementById('product_output').value);
+
+        let rm = h + c4001 + m + l;
+        document.getElementById('rm_input').innerText = rm > 0 ? rm.toFixed(3) : "-";
+
+        let tamount = rm + cp + returnC;
+        document.getElementById('tamount_input').innerText = tamount > 0 ? tamount.toFixed(3) : "-";
+
+        function getRate(val) {
+            if (tamount === 0 || val === 0) return "-";
+            let rate = (val / tamount) * 100;
+            return rate.toFixed(2) + "%";
+        }
+
+        document.getElementById('h_rate').innerText = getRate(h);
+        document.getElementById('c4001_rate').innerText = getRate(c4001);
+        document.getElementById('m_rate').innerText = getRate(m);
+        document.getElementById('l_rate').innerText = getRate(l);
+        document.getElementById('rm_rate').innerText = getRate(rm);
+        document.getElementById('cp_rate').innerText = getRate(cp);
+        document.getElementById('return_rate').innerText = getRate(returnC);
+
+        if (tamount > 0 && product > 0) {
+            let yieldVal = (product / tamount) * 100;
+            document.getElementById('yield').innerText = yieldVal.toFixed(2) + "%";
+        } else {
+            document.getElementById('yield').innerText = "-";
+        }
+    }
+
+    
+     
+    
+
+    function calculateGrandTotal_labor() {
+        let grandTotal = 0;
+        const rows = document.querySelectorAll('#tableBody tr');
+
+        rows.forEach(row => {
+            const selectEl = row.querySelector('select');
+            const selectedVal = selectEl ? selectEl.value : "";
+            const tLaborInput = row.querySelector('.total-labor');
+
+            // ប្រសិនបើជ្រើសរើសเป็น W.H Suppervisor ឬ Granular line គឺកំណត់ T-Labor = 1 ភ្លាមៗ
+            if (selectedVal === "ប្រធានផ្នែក W.H Suppervisor" || selectedVal === "ប្រធានផ្នែក Granular line") {
+                if (tLaborInput) tLaborInput.value = 1;
+                grandTotal += 1;
+            } else {
+                const staffInputs = row.querySelectorAll('.col-packaging, .col-boiler, .col-input1, .col-input2, .col-dice1, .col-dice2, .col-forklift, .col-cleaner');
+                let rowTotal = 0;
+                staffInputs.forEach(input => {
+                    let val = parseFloat(input.value);
+                    if (!isNaN(val)) {
+                        rowTotal += val;
+                    }
+                });
+
+                if (tLaborInput) {
+                    tLaborInput.value = rowTotal;
+                }
+                grandTotal += rowTotal;
+            }
+        });
+
+        const grandTotalElement = document.getElementById('grand-total');
+        if (grandTotalElement) {
+            grandTotalElement.innerText = grandTotal;
+        }
+    }
+
+    function calculateGrandTotal() {
+        const parseValue = (value) => {
+            if (!value) return 0;
+            let cleanStr = value.toString().replace(/[^\d.-]/g, '');
+            return parseFloat(cleanStr) || 0;
+        };
+
+        const underSizeInput = document.querySelector('.under-size-input');
+        const overSizeInput = document.querySelector('.over-size-input');
+
+        if (underSizeInput && overSizeInput) {
+            let underSizeVal = parseValue(underSizeInput.value);
+            let overSizeVal = parseValue(overSizeInput.value);
+            let total = (underSizeVal + overSizeVal) / 1000;
+          
+
+            const resultElement = document.getElementById('grand total Overside');
+           
+            if (resultElement) {
+                resultElement.textContent = total.toFixed(2) + ' T';
+               
+            }
+        }
+    }
+    function calculateKwh() {
+            // យកតម្លៃពី Input Start និង End
+            let start = parseFloat(document.getElementById('startKwh').value) || 0;
+            let end = parseFloat(document.getElementById('endKwh').value) || 0;
+            
+            // គណនាផលដក (End - Start)
+            let total = end - start;
+            
+            // បញ្ជាក់កុំឱ្យតម្លៃអវិជ្ជមាន (បើចាំបាច់)
+            if (total < 0) total = 0;
+            
+            // បង្ហាញលទ្ធផលទៅកាន់ HTML
+            document.getElementById('totalKwh').innerText = total;
+        }
+
+        // ហៅហ្វូមុ្សនម្តងពេលផ្ទុកទំព័ររួច ដើម្បីគណនាតម្លៃស្រាប់
+        calculateKwh();
+        
+    function parseVal(val) {
+        let num = parseFloat(val);
+        return isNaN(num) ? 0 : num;
+    }
+
+    function calculateSectionII() {
+        let h = parseVal(document.getElementById('h_input').value);
+        let c4001 = parseVal(document.getElementById('c4001_input').value);
+        let m = parseVal(document.getElementById('m_input').value);
+        let l = parseVal(document.getElementById('l_input').value);
+        let cp = parseVal(document.getElementById('cp_input').value);
+        let returnC = parseVal(document.getElementById('return_input').value);
+        let product = parseVal(document.getElementById('product_output').value);
+         // គណនាសរុប RM (A) = H + 4001 + M + L
+        let rm = h + c4001 + m + l;
+        document.getElementById('rm_input').innerText = rm > 0 ? rm.toFixed(3) : "-";
+
+        // គណនាសរុប Amount = RM (A) + CP (B) + Return (C)
+        let tamount = rm + cp + returnC;
+        document.getElementById('tamount_input').innerText = tamount > 0 ? tamount.toFixed(3) : "-";
+
+        function getRate(val) {
+            if (tamount === 0 || val === 0) return "-";
+            let rate = (val / tamount) * 100;
+            return rate.toFixed(2) + "%";
+        }
+
+        document.getElementById('h_rate').innerText = getRate(h);
+        document.getElementById('c4001_rate').innerText = getRate(c4001);
+        document.getElementById('m_rate').innerText = getRate(m);
+        document.getElementById('l_rate').innerText = getRate(l);
+        document.getElementById('rm_rate').innerText = getRate(rm);
+        document.getElementById('cp_rate').innerText = getRate(cp);
+        document.getElementById('return_rate').innerText = getRate(returnC);
+
+        if (tamount > 0 && product > 0) {
+            let yieldVal = (product / tamount) * 100;
+            document.getElementById('yield').innerText = yieldVal.toFixed(2) + "%";
+        } else {
+            document.getElementById('yield').innerText = "-";
+        }
+    }
+  
+
+        window.onload = function() {
+        loadFromLocalStorage();
+        calculateGrandTotal_labor();
+        calculateSectionII();
+        calculateGrandTotal();
+        calculateKwh();
+        updateRowNumbers();
+    };
+
+    function submitData() {
+        document.getElementById('loading_status').style.color = "blue";
+        document.getElementById('loading_status').innerText = "កំពុងរក្សាទុក...";
+        
+        const formData = {
+            no: document.querySelector('tbody tr td').innerText,
+            date: document.getElementById('reportDate').value,
+            shift: document.getElementById('reportShift').value,
+            h_input: document.getElementById('h_input').value,
+            h_rate: document.getElementById('h_rate').innerText,
+            c4001_input: document.getElementById('c4001_input').value,
+            c4001_rate: document.getElementById('c4001_rate').innerText,
+            m_input: document.getElementById('m_input').value,
+            m_rate: document.getElementById('m_rate').innerText,
+            l_input: document.getElementById('l_input').value,
+            l_rate: document.getElementById('l_rate').innerText,
+            rm_input: document.getElementById('rm_input').innerText,
+            rm_rate: document.getElementById('rm_rate').innerText,
+            cp_input: document.getElementById('cp_input').value,
+            cp_rate: document.getElementById('cp_rate').innerText,
+            return_input: document.getElementById('return_input').value,
+            return_rate: document.getElementById('return_rate').innerText,
+            tamount_input: document.getElementById('tamount_input').innerText,
+            product_output: document.getElementById('product_output').value,
+            yield: document.getElementById('yield').innerText
+        };
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+            google.script.run
+                .withSuccessHandler(onSuccess)
+                .withFailureHandler(onFailure)
+                .processForm(formData);
+        } else {
+            setTimeout(() => {
+                document.getElementById('loading_status').style.color = "green";
+                document.getElementById('loading_status').innerText = "រក្សាទុកដោយជោគជ័យ!";
+            }, 1000);
+        }
+    }
+
+    function onSuccess(result) {
+        const statusSpan = document.getElementById('loading_status');
+        statusSpan.style.color = "green";
+        statusSpan.innerText = "រក្សាទុកចូល Google Sheets ជោគជ័យ!";
+    }
+
+    function onFailure(error) {
+        const statusSpan = document.getElementById('loading_status');
+        statusSpan.style.color = "red";
+        statusSpan.innerText = "បរាជ័យ: " + error.message;
+    }
+    // មុខងារแปลงជាទម្រង់រូបភាព (Image)
+    async function convertToImage() {
+        const container = document.querySelector('.container');
+        const toolbar = document.querySelector('.toolbar');
+        
+        if (toolbar) toolbar.style.display = 'none';
+
+        if (document.fonts && document.fonts.ready) {
+            await document.fonts.ready;
+        }
+
+        const options = {
+            scale: 3,
+            useCORS: true,
+            logging: false,
+            letterRendering: true,
+            allowTaint: true,
+            windowWidth: 1400,
+            onclone: function(clonedDoc) {
+                const clonedContainer = clonedDoc.querySelector('.container');
+                if (clonedContainer) {
+                    clonedContainer.style.margin = '0 auto';
+                    clonedContainer.style.boxShadow = 'none';
+                    const allText = clonedContainer.querySelectorAll('*');
+                    allText.forEach(el => {
+                        el.style.textRendering = 'geometricPrecision';
+                        el.style.webkitFontSmoothing = 'antialiased';
+                    });
+                }
+            }
+        };
+
+        html2canvas(container, options).then(canvas => {
+            if (toolbar) toolbar.style.display = 'flex';
+            const link = document.createElement('a');
+            link.download = 'heritage_report_landscape.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }).catch(err => {
+            if (toolbar) toolbar.style.display = 'flex';
+            alert("មានបញ្ហាក្នុងការបង្កើតរូបភាព: " + err.message);
+        });
+    }
+   // មុខងារបង្ហាញព័ត៌មាន User (ឈ្មោះ, តួនាទី, អត្ថលេខ) ពីទិន្នន័យ Login ក្នុង Firebase
+function displayUserInfo() {
+    const badgeElement = document.getElementById('userBadge');
+    
+    // ទាញយកទិន្នន័យ User ដែលបានរក្សាទុកពេល Login (ឧទាហរណ៍៖ រក្សាទុកក្នុង 'userData' ឬ 'currentUser')
+    // អ្នកអាចប្ដូរឈ្មោះ Key ឱ្យត្រូវគ្នាជាមួយកូដ Login របស់អ្នកជាមួយ Firebase
+    let loggedUser = JSON.parse(localStorage.getItem('currentUser')) || JSON.parse(sessionStorage.getItem('currentUser'));
+
+    if (loggedUser) {
+        // បង្ហាញទិន្នន័យដែលទាញបានពី Firebase មកកាន់ Badge
+        let name = loggedUser.name || loggedUser.username || "មិនមានឈ្មោះ";
+        let position = loggedUser.position || loggedUser.role || "បុគ្គលិក";
+        let empId = loggedUser.empId || loggedUser.id || "EMP-000";
+
+        badgeElement.innerHTML = `👤 ${name} | 🛠️ ${position} | 🆔 ${empId}`;
+    } else {
+        // ករណីរកមិនឃើញទិន្នន័យ (អាចតម្រូវឱ្យ Login ឡើងវិញ ឬបង្ហាញជាค่าទទេ)
+        badgeElement.innerHTML = `👤 Men Dararith | 🛠️ Developer | 🆔 EMP-1489`;
+    }
+}
+
+// មុខងារ Logout សម្រាប់សម្អាតទិន្នន័យក្នុង Session/Local និងបញ្ជូនទៅកាន់ទំព័រ Login វិញ
+function logout() {
+    if (confirm("តើអ្នកពិតជាចង់ចាកចេញពីប្រព័ន្ធ (Logout) មែនទេ?")) {
+        // លុបទិន្នន័យ Login ចេញពី LocalStorage/SessionStorage
+        localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('currentUser');
+        
+        // ប្រសិនបើអ្នកប្រើ Firebase Auth ផ្ទាល់ អ្នកអាចហៅ firebase.auth().signOut() ទីនេះបាន
+        // ឧទាហរណ៍៖ firebase.auth().signOut().then(() => { window.location.href = 'login.html'; });
+
+        alert("អ្នកបានចាកចេញពីប្រព័ន្ធដោយជោគជ័យ!");
+        
+        // បញ្ជូនទៅកាន់ទំព័រ Login របស់អ្នក (សូមកែឈ្មោះไฟล์ login.html តាមការជាក់ស្តែង)
+        window.location.href = 'login.html'; 
+    }
+}
+// បន្ថែមការហៅដំណើរការ function displayUserInfo() ក្នុង window.onload ដែលមានស្រាប់របស់អ្នក៖
+window.onload = function() {
+    loadFromLocalStorage();
+    displayUserInfo(); // ហៅទាញយកឈ្មោះ តួនាទី និងអត្ថលេខមកបង្ហាញ
+    calculateGrandTotal_labor();
+    calculateSectionII();
+    calculateGrandTotal();
+    calculateKwh();
+    updateRowNumbers();
+};
+
+    
+</script>
+</body>
+</html>
