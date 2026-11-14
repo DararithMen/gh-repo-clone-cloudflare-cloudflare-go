@@ -5,7 +5,7 @@ const FIREBASE_URL = 'https://documents-y7-2.firebaseio.com';
  * Serves the HTML file when the web app URL is visited.
  */
 function doGet() {
-  return HtmlService.createTemplateFromFile('login')
+  return HtmlService.createTemplateFromFile('index')
     .evaluate()
     .setTitle('Staff Login - Firebase')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
@@ -13,12 +13,11 @@ function doGet() {
 }
 
 /**
- * មុខងារសម្រាប់ហៅទំព័រ Index.html មកបង្ហាញក្រោយពេល Login ជោគជ័យ
- */
-function loadIndex() {
-  return HtmlService.createHtmlOutputFromFile('Index').getContent();
-}
 
+function loadHome() {
+  // មុខងារនេះត្រូវបានហៅតាមរយៈ google.script.run ពេល Login ត្រូវ
+  return HtmlService.createHtmlOutputFromFile('Home.html').getContent();
+}
 /**
  * មុខងារពិនិត្យការ Login ពី Firebase Realtime Database
  */
