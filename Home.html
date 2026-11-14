@@ -819,6 +819,38 @@
         alert("Errors: " + err.message);
     });
 }
+    window.addEventListener('DOMContentLoaded', () => {
+            const currentUserStr = sessionStorage.getItem('currentUser');
+            
+            if (!currentUserStr) {
+                // បើគ្មានទិន្នន័យ Session បញ្ជូនត្រឡប់ទៅ Login វិញ
+                alert('សូមចូលប្រព័ន្ធជាមុនសិន!');
+                location.reload();
+                return;
+            }
+
+            const user = JSON.parse(currentUserStr);
+
+            // បង្ហាញទិន្នន័យអ្នកប្រើប្រាស់នៅលើ UI
+            document.getElementById('userNameDisplay').textContent = user.name;
+            document.getElementById('userDeptDisplay').textContent = `ផ្នែក: ${user.department}`;
+            document.getElementById('welcomeHeading').textContent = `ស្វាគមន៍, ${user.name}!`;
+            document.getElementById('cardEmpId').textContent = user.emp_id;
+            document.getElementById('cardDept').textContent = user.department;
+            
+            if (user.timestamp) {
+                const dateObj = new Date(user.timestamp);
+                document.getElementById('cardTimestamp').textContent = dateObj.toLocaleString('km-KH');
+            } else {
+                document.getElementById('cardTimestamp').textContent = 'ទិន្នន័យអត់មានកំណត់ត្រា';
+            }
+        });
+
+        // មុខងារចាកចេញពីប្រព័ន្ធ
+        function handleLogout() {
+            sessionStorage.removeItem('currentUser');
+            location.reload(); // Reload ដើម្បីឱ្យវាត្រឡប់ទៅបង្ហាញ index.html ដើមវិញ
+        }
 </script>
 </body>
 </html>
