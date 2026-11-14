@@ -22,7 +22,7 @@
             }
         }
     </script>
-a   <style>
+  <style>
         body {
             font-family: 'Kantumruy Pro', sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
@@ -139,183 +139,201 @@ a   <style>
         </div>
     </div>
 
-    <!-- JavaScript Logic for Mock JSON Database -->
-    <script>
-        // ទិន្នន័យមូលដ្ឋានក្នុងទម្រង់ JSON (អាចរក្សាទុកក្នុង localStorage)
-        let dbData = {
-            "employees": {
-                "emp_01": {
-                    "emp_id": "EMP-1489",
-                    "password": "123456",
-                    "name": "ម៉ែន ដារ៉ារិទ្ធ",
-                    "department": "IT",
-                    "timestamp": "2026-11-08T10:00:00.000Z"
-                },
-                "emp_02": {
-                    "emp_id": "EMP-1024",
-                    "password": "yourpassword123",
-                    "name": "សុខ ជា",
-                    "department": "IT",
-                    "timestamp": "2026-11-08T10:00:00.000Z"
-                }
-            }
-        };
 
-        // ផ្ទុកទិន្នន័យពី localStorage ប្រសិនបើមានស្រាប់
-        if (localStorage.getItem('company_employees_db')) {
-            try {
-                dbData = JSON.parse(localStorage.getItem('company_employees_db'));
-            } catch (e) {
-                console.error("Error loading database:", e);
-            }
-        } else {
-            // រក្សាទុកទិន្នន័យដើមចូល localStorage លើកដំបូង
-            localStorage.setItem('company_employees_db', JSON.stringify(dbData));
-        }
+    
 
-        function switchTab(mode) {
-            const loginBtn = document.getElementById('tabLoginBtn');
-            const signupBtn = document.getElementById('tabSignupBtn');
-            const loginForm = document.getElementById('loginForm');
-            const signupForm = document.getElementById('signupForm');
-            const formTitle = document.getElementById('formTitle');
-            const formSubtitle = document.getElementById('formSubtitle');
+       <!-- Firebase App (Modular SDK CDN) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-            if (mode === 'login') {
-                loginBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-slate-800 shadow-sm";
-                signupBtn.className = "flex-1 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700 rounded-lg transition-all duration-200";
-                loginForm.classList.remove('hidden');
-                signupForm.classList.add('hidden');
-                formTitle.textContent = "ស្វាគមន៍មកកាន់ប្រព័ន្ធ";
-                formSubtitle.textContent = "សូមបញ្ចូលអត្តលេខបុគ្គលិកដើម្បីចូលប្រើប្រាស់";
-            } else {
-                signupBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-slate-800 shadow-sm";
-                loginBtn.className = "flex-1 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700 rounded-lg transition-all duration-200";
-                signupForm.classList.remove('hidden');
-                loginForm.classList.add('hidden');
-                formTitle.textContent = "បង្កើតគណនីថ្មី";
-                formSubtitle.textContent = "សូមបំពេញព័ត៌មានខាងក្រោមដើម្បីចុះឈ្មោះ";
-            }
-        }
+  // ការកំណត់ការតភ្ជាប់ Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCh0zr1ZsuUYtYnoto2ml-fLm7SWyRUCpM",
+    authDomain: "documents-y7-2.firebaseapp.com",
+    databaseURL: "https://documents-y7-2.firebaseio.com",
+    projectId: "documents-y7-2",
+    storageBucket: "documents-y7-2.appspot.com",
+    messagingSenderId: "7486379749",
+    appId: "1:7486379749:web:77e78317f89df90ce4260c",
+    measurementId: "G-WWLX6Y48QC"
+  };
 
-        function showNotification(message, type = 'danger') {
-            const alertBox = document.getElementById('alertBox');
-            alertBox.textContent = message;
-            alertBox.className = "mx-8 p-3 rounded-xl text-xs font-medium transition-all duration-200 ";
-            
-            if (type === 'danger') {
-                alertBox.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-200');
-            } else if (type === 'success') {
-                alertBox.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
-            } else {
-                alertBox.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200');
-            }
+  // ផ្ដើមដំណើរការ Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-            alertBox.classList.remove('hidden');
-            setTimeout(() => {
-                alertBox.classList.add('hidden');
-            }, 3500);
-        }
+  // បង្ហាញការជូនដំណឹង
+  window.showNotification = function(message, type = 'danger') {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.textContent = message;
+      alertBox.className = "mx-8 p-3 rounded-xl text-xs font-medium transition-all duration-200 ";
+      
+      if (type === 'danger') {
+          alertBox.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-200');
+      } else if (type === 'success') {
+          alertBox.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
+      } else {
+          alertBox.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200');
+      }
 
-        // បើកទំព័រដើម ឬហៅ Google Apps Script ពេល Login ជោគជ័យ
-        function openHomePage(userData) {
-            showNotification(`ចូលប្រព័ន្ធជោគជ័យ! ស្វាគមន៍ ${userData.name}`, 'success');
-            
-            setTimeout(() => {
-                if (typeof google !== 'undefined' && google.script && google.script.run) {
-                    google.script.run
-                        .withSuccessHandler(function(htmlContent) {
-                            document.open();
-                            document.write(htmlContent);
-                            document.close();
-                        })
-                        .withFailureHandler(function(error) {
-                            showNotification('មានបញ្ហាក្នុងការបើកទំព័រដើម: ' + error.message, 'danger');
-                        })
-                        .loadIndex();
-                } else {
-                    // ករណីេសងខាងក្រៅ Google Apps Script (Test locally)
-                    console.log("Logged in user data:", userData);
-                }
-            }, 1000);
-        }
+      alertBox.classList.remove('hidden');
+      setTimeout(() => {
+          alertBox.classList.add('hidden');
+      }, 3500);
+  }
 
-        // ផ្ទៀងផ្ទាត់ការ Login ជាមួយ JSON Database
-        function handleLogin(e) {
-            e.preventDefault();
-            const empIdInput = document.getElementById('loginEmpId').value.trim();
-            const passwordInput = document.getElementById('loginPassword').value.trim();
-            
-            let foundUser = null;
+  // ប្តូររវាងផ្ទាំង Login និង Signup
+  window.switchTab = function(mode) {
+      const loginBtn = document.getElementById('tabLoginBtn');
+      const signupBtn = document.getElementById('tabSignupBtn');
+      const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+      const formTitle = document.getElementById('formTitle');
+      const formSubtitle = document.getElementById('formSubtitle');
 
-            // រកមើល emp_id នៅក្នុង Object "employees"
-            for (let key in dbData.employees) {
-                if (dbData.employees[key].emp_id.toLowerCase() === empIdInput.toLowerCase()) {
-                    foundUser = dbData.employees[key];
-                    break;
-                }
-            }
+      if (mode === 'login') {
+          loginBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-slate-800 shadow-sm";
+          signupBtn.className = "flex-1 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700 rounded-lg transition-all duration-200";
+          loginForm.classList.remove('hidden');
+          signupForm.classList.add('hidden');
+          formTitle.textContent = "ស្វាគមន៍មកកាន់ប្រព័ន្ធ";
+          formSubtitle.textContent = "សូមបញ្ចូលអត្តលេខបុគ្គលិកដើម្បីចូលប្រើប្រាស់";
+      } else {
+          signupBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-slate-800 shadow-sm";
+          loginBtn.className = "flex-1 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700 rounded-lg transition-all duration-200";
+          signupForm.classList.remove('hidden');
+          loginForm.classList.add('hidden');
+          formTitle.textContent = "បង្កើតគណនីថ្មី";
+          formSubtitle.textContent = "សូមបំពេញព័ត៌មានខាងក្រោមដើម្បីចុះឈ្មោះ";
+      }
+  }
 
-            if (foundUser) {
-                if (foundUser.password === passwordInput) {
-                    openHomePage(foundUser);
-                } else {
-                    showNotification('ពាក្យសម្ងាត់មិនត្រឹមត្រូវ!', 'danger');
-                }
-            } else {
-                showNotification('រកមិនឃើញអត្តលេខបុគ្គលិកនេះទេ!', 'danger');
-            }
-        }
+  // មុខងារបើកទំព័រដើមពេល Login ជោគជ័យ
+  function openHomePage(userData) {
+      showNotification(`ចូលប្រព័ន្ធជោគជ័យ! ស្វាគមន៍ ${userData.name}`, 'success');
+      
+      // រក្សាទុកទិន្នន័យ Session ទុកប្រើប្រាស់បន្ត
+      sessionStorage.setItem('currentUser', JSON.stringify(userData));
 
-        // ចុះឈ្មោះគណនីថ្មី និងបញ្ចូលទៅក្នុង JSON Database
-        function handleSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById('signupName').value.trim();
-            const empId = document.getElementById('signupEmpId').value.trim();
-            const dept = document.getElementById('signupDept').value;
-            const pass = document.getElementById('signupPassword').value;
-            const confirmPass = document.getElementById('signupConfirmPassword').value;
+      setTimeout(() => {
+          if (typeof google !== 'undefined' && google.script && google.script.run) {
+              google.script.run
+                  .withSuccessHandler(function(htmlContent) {
+                      document.open();
+                      document.write(htmlContent);
+                      document.close();
+                  })
+                  .withFailureHandler(function(error) {
+                      showNotification('មានបញ្ហាក្នុងការបើកទំព័រដើម: ' + error.message, 'danger');
+                  })
+                  .loadIndex();
+          } else {
+              console.log("Logged in user data:", userData);
+          }
+      }, 1000);
+  }
 
-            if (pass !== confirmPass) {
-                showNotification('ពាក្យសម្ងាត់ទាំងពីរមិនត្រូវគ្នាទេ!', 'danger');
-                return;
-            }
+  // ស្គ្រីបផ្ទៀងផ្ទាត់ការ Login ជាមួយ Firebase Realtime Database
+  window.handleLogin = async function(e) {
+      e.preventDefault();
+      const empIdInput = document.getElementById('loginEmpId').value.trim();
+      const passwordInput = document.getElementById('loginPassword').value.trim();
+      
+      try {
+          const dbRef = ref(getDatabase());
+          const snapshot = await get(child(dbRef, 'employees'));
+          
+          if (snapshot.exists()) {
+              const employees = snapshot.val();
+              let foundUser = null;
 
-            // ពិនិត្យមើលថាតើអត្តលេខមានរួចហើយឬនៅ
-            let exists = false;
-            for (let key in dbData.employees) {
-                if (dbData.employees[key].emp_id.toLowerCase() === empId.toLowerCase()) {
-                    exists = true;
-                    break;
-                }
-            }
+              // ឆែករកមើលអត្តលេខបុគ្គលិក (Employee ID)
+              for (let key in employees) {
+                  if (employees[key].emp_id && employees[key].emp_id.toLowerCase() === empIdInput.toLowerCase()) {
+                      foundUser = employees[key];
+                      break;
+                  }
+              }
 
-            if (exists) {
-                showNotification('អត្តលេខបុគ្គលិកនេះមានរួចហើយ!', 'danger');
-                return;
-            }
+              if (foundUser) {
+                  if (foundUser.password === passwordInput) {
+                      openHomePage(foundUser);
+                  } else {
+                      showNotification('ពាក្យសម្ងាត់មិនត្រឹមត្រូវ!', 'danger');
+                  }
+              } else {
+                  showNotification('រកមិនឃើញអត្តលេខបុគ្គលិកនេះទេ!', 'danger');
+              }
+          } else {
+              showNotification('មិនមានទិន្នន័យបុគ្គលិកនៅក្នុងប្រព័ន្ធ Database ទេ។', 'danger');
+          }
+      } catch (error) {
+          console.error(error);
+          showNotification('មានបញ្ហាក្នុងការតភ្ជាប់ទៅកាន់ Firebase: ' + error.message, 'danger');
+      }
+  }
 
-            // បង្កើត Key ថ្មី (ឧ. emp_03, emp_04, ...)
-            const newKey = 'emp_' + String(Object.keys(dbData.employees).length + 1).padStart(2, '0');
+  // ស្គ្រីបចុះឈ្មោះបុគ្គលិកថ្មី និងបញ្ជូនចូល Firebase Realtime Database
+  window.handleSignup = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value.trim();
+      const empId = document.getElementById('signupEmpId').value.trim();
+      const dept = document.getElementById('signupDept').value;
+      const pass = document.getElementById('signupPassword').value;
+      const confirmPass = document.getElementById('signupConfirmPassword').value;
 
-            // បន្ថែមទិន្នន័យថ្មីចូល JSON Structure
-            dbData.employees[newKey] = {
-                "emp_id": empId,
-                "password": pass,
-                "name": name,
-                "department": dept,
-                "timestamp": new Date().toISOString()
-            };
+      if (pass !== confirmPass) {
+          showNotification('ពាក្យសម្ងាត់ទាំងពីរមិនត្រូវគ្នាទេ!', 'danger');
+          return;
+      }
 
-            // រក្សាទុកទៅក្នុង localStorage
-            localStorage.setItem('company_employees_db', JSON.stringify(dbData));
+      try {
+          const dbRef = ref(getDatabase());
+          const snapshot = await get(child(dbRef, 'employees'));
+          
+          let exists = false;
+          let count = 0;
 
-            showNotification('បង្កើតគណនីបុគ្គលិកបានជោគជ័យ!', 'success');
-            setTimeout(() => {
-                e.target.reset();
-                switchTab('login');
-            }, 1200);
-        }
+          if (snapshot.exists()) {
+              const employees = snapshot.val();
+              count = Object.keys(employees).length;
+              for (let key in employees) {
+                  if (employees[key].emp_id && employees[key].emp_id.toLowerCase() === empId.toLowerCase()) {
+                      exists = true;
+                      break;
+                  }
+              }
+          }
+
+          if (exists) {
+              showNotification('អត្តលេខបុគ្គលិកនេះមានរួចហើយ!', 'danger');
+              return;
+          }
+
+          // បង្កើត Key ស្វ័យប្រវត្តិ (ឧ. emp_01, emp_02, ...)
+          const newKey = 'emp_' + String(count + 1).padStart(2, '0');
+
+          // រក្សាទុកទិន្នន័យចូល Firebase Realtime Database
+          await set(ref(db, 'employees/' + newKey), {
+              emp_id: empId,
+              password: pass,
+              name: name,
+              department: dept,
+              timestamp: new Date().toISOString()
+          });
+
+          showNotification('បង្កើតគណនីបុគ្គលិកបានជោគជ័យ!', 'success');
+          setTimeout(() => {
+              e.target.reset();
+              switchTab('login');
+          }, 1200);
+
+      } catch (error) {
+          console.error(error);
+          showNotification('មានបញ្ហាក្នុងការចុះឈ្មោះ: ' + error.message, 'danger');
+      }
+  }
     </script>
 </body>
 </html>
